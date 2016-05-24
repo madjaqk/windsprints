@@ -68,6 +68,27 @@ def register():
 		session["id"] = user["id"]
 
 		return redirect("/wall")
-	
+
+@app.route("/login", methods=["POST"])
+def login():
+    query = "SELECT * FROM users WHERE email='{}'".format(request.form["email"])
+    user = mysql.fetch(query)
+    if not user:
+        flash("User not found")
+        return redirect("/")
+    else:
+        user = user[0]
+
+    if bcrypt.check_password_hash(user["password"], request.form["password"]):
+        session["id"] = user["id"]
+        return redirect("/wall")
+    else:
+        flash("Incorrect password")
+        return redirect("/")
+
+@app.route("/logout")
+def logout():
+	session.clear()
+	return redirect("/")
 
 app.run(debug=True)
