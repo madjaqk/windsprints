@@ -2,11 +2,33 @@
 <html>
 	<head>
 		<title>Wall</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 	</head>
 	<body>
 		<h1>Wall</h1>
 		<p>Hello, {{user.first_name}}</p>
 		<p><a href="/logout">Log out?</a></p>
-		User: {{user}}
+		<form action="/message" method="post">
+			<p>Message:</p>
+			<textarea rows=6 cols=60 name="message"></textarea>
+			<p><input type="submit" value="Post message"></p>
+		</form>
+		{% for message in messages %}
+			<div class="message">
+				<p>{{message.first_name}} {{message.last_name}} at {{ message.created_at.strftime("%I:%M %p %A, %B %d, %Y")}}:</p>
+				<p>{{message.message}}</p>
+				<form action="/comment" method="post">
+					<input type="hidden" value="{{message.id}}" name="message_id">
+					<textarea rows=3 cols=40 name="comment"></textarea>
+					<p><input type="submit" value="Post comment"></p>
+				</form>
+				{% for comment in message.comments %}
+					<div class="comment">
+						<p>{{comment.first_name}} {{comment.last_name}} at {{comment.created_at.strftime("%I:%M %p %A, %B %d, %Y")}}:</p>
+						<p>{{comment.comment}}</p>
+					</div>
+				{% endfor %}
+			</div>
+		{% endfor %}
 	</body>
 </html>

@@ -17,14 +17,6 @@ def show_login_page():
 	else:
 		return render_template("login.html")
 
-@app.route("/wall")
-def show_wall():
-	if "id" not in session: return redirect("/")
-
-	logged_in_user = mysql.fetch("SELECT * FROM users WHERE id={}".format(session["id"]))[0]
-
-	return render_template("wall.html", user=logged_in_user)
-
 @app.route("/register", methods=["POST"])
 def register():
 	errors = []
@@ -90,5 +82,36 @@ def login():
 def logout():
 	session.clear()
 	return redirect("/")
+
+@app.route("/wall")
+def show_wall():
+	if "id" not in session: return redirect("/")
+
+	logged_in_user = mysql.fetch("SELECT * FROM users WHERE id={}".format(session["id"]))[0]
+
+	messages = mysql.fetch("SELECT message, messages.id, messages.created_at, first_name, last_name FROM messages LEFT JOIN users ON messages.user_id=users.id ORDER BY created_at DESC")
+
+	for message in messages:
+		message["comments"] = mysql.fetch("SELECT comment, comments.created_at, first_name, last_name FROM comments LEFT JOIN users ON comments.user_id=users.id WHERE comments.message_id={} ORDER BY created_at ASC".format(message["id"]))	
+
+	return render_template("wall.html", user=logged_in_user, messages=messages)
+
+@app.route("/message", methods=["POST"])
+def create_message():
+	if request.form["message"]:
+		message = request.form["message"].replace("'", "''")
+		query = "INSERT INTO messages (message, user_id, created_at, updated_at) VALUES ('{}', '{}', NOW(), NOW())".format(message, session["id"])
+		mysql.run_mysql_query(query)
+
+	return redirect("/wall")
+
+@app.route("/comment", methods=["POST"])
+def create_comment():
+	if request.form["comment"]:
+		comment = request.form["comment"].replace("'", "''")
+		query = "INSERT INTO comments (comment, user_id, message_id, created_at, updated_at) VALUES ('{}', '{}', '{}', NOW(), NOW())".format(comment, session["id"], request.form["message_id"])
+		mysql.run_mysql_query(query)
+
+	return redirect("/wall")
 
 app.run(debug=True)
