@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Floor Painter</title>
+		<style type="text/css">
+			div.row{
+				margin: 0px;
+			}
+			div.space{
+				display: inline-block;
+				height: 25px;
+				width: 25px;
+				margin: 0px;
+			}
+		</style>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript">
+
+			$(document).ready(function(){
+				function showBoard(){
+					colors = {
+						3: "blue",
+						2: "black",
+						1: "white",
+						0: "red"
+					}
+					for(var rowcount=0; rowcount<12; rowcount++){
+						for(var colcount=0; colcount<12; colcount++){
+							$("#"+rowcount+"-"+colcount).css("background", colors[board[rowcount][colcount]])
+						}
+					}
+
+					console.log(paintbrush.row, paintbrush.col)
+					$("#"+paintbrush.row + "-" + paintbrush.col).css("background", "url('jonata-Brush-300px.png') no-repeat")
+					$("#"+paintbrush.row + "-" + paintbrush.col).css("background-size", "contain")
+
+					$("#score").html(score + " points")
+				}
+
+				var gameboardstring = ""
+
+				for(var i=0; i<12; i++){
+					gameboardstring += "<div class='row'>"
+					for(var j=0; j<12; j++){
+						gameboardstring += `<div class='space' id='${i}-${j}'></div>`
+					}
+					gameboardstring += "</div>"
+				}
+
+				$("#gameboard").html(gameboardstring)
+
+				var board = [
+					[2,2,2,2,2,2,2,2,2,2,2,2],
+					[2,0,1,1,1,1,1,1,1,1,1,2],
+					[2,1,2,2,1,2,2,1,2,2,1,2],
+					[2,1,1,1,1,1,1,1,1,1,1,2],
+					[2,1,2,2,1,2,2,1,2,2,1,2],
+					[2,1,1,1,1,1,1,1,1,1,1,2],
+					[2,1,2,2,1,2,2,1,2,2,1,2],
+					[2,1,1,1,1,1,1,1,1,1,1,2],
+					[2,1,2,2,1,2,2,1,2,2,1,2],
+					[2,1,1,1,1,1,1,1,1,1,1,2],
+					[2,1,2,2,1,2,2,1,2,2,1,2],
+					[2,2,2,2,2,2,2,2,2,2,2,2],
+				]
+				
+				// place cherry
+				board[Math.floor(Math.random()*10+1)][Math.floor(Math.random()*10+1)] = 3
+
+				paintbrush = {row: 1, col: 1}
+				var score = 0
+
+				showBoard()
+
+
+				$("body").on("keydown", function(event){
+					console.log(event.keyCode)
+
+					switch(event.keyCode){
+						case 37:
+							if(board[paintbrush.row][paintbrush.col-1] != 2){
+								paintbrush.col -= 1
+							}
+							break
+						case 38:
+							if(board[paintbrush.row-1][paintbrush.col] != 2){
+								paintbrush.row -= 1
+							}
+							break
+						case 39:
+							if(board[paintbrush.row][paintbrush.col+1] != 2){
+								paintbrush.col += 1
+							}
+							break
+						case 40:
+							console.log(board[paintbrush.row+1][paintbrush.col])
+							if(board[paintbrush.row+1][paintbrush.col] != 2){
+								paintbrush.row += 1
+							}
+					}
+
+					if(board[paintbrush.row][paintbrush.col]==1){
+						score += 10
+					} else if(board[paintbrush.row][paintbrush.col] == 3) {
+						score += 50
+					}
+					
+					board[paintbrush.row][paintbrush.col] = 0
+					showBoard()
+				})
+			})
+			
+		</script>
+	</head>
+	<body>
+		<h3>A trademark-respecting take on a classic game</h3>
+		<p id="score">0 points</p>
+		<div id="gameboard">
+		</div>
+	</body>
+</html>
