@@ -89,7 +89,7 @@ def show_wall():
 
 	logged_in_user = mysql.fetch("SELECT * FROM users WHERE id={}".format(session["id"]))[0]
 
-	messages = mysql.fetch("SELECT message, messages.id, messages.created_at, first_name, last_name FROM messages LEFT JOIN users ON messages.user_id=users.id ORDER BY created_at DESC")
+	messages = mysql.fetch("SELECT message, messages.id, messages.created_at, messages.user_id, first_name, last_name FROM messages LEFT JOIN users ON messages.user_id=users.id ORDER BY created_at DESC")
 
 	for message in messages:
 		message["comments"] = mysql.fetch("SELECT comment, comments.created_at, first_name, last_name FROM comments LEFT JOIN users ON comments.user_id=users.id WHERE comments.message_id={} ORDER BY created_at ASC".format(message["id"]))	
@@ -111,6 +111,17 @@ def create_comment():
 		comment = request.form["comment"].replace("'", "''")
 		query = "INSERT INTO comments (comment, user_id, message_id, created_at, updated_at) VALUES ('{}', '{}', '{}', NOW(), NOW())".format(comment, session["id"], request.form["message_id"])
 		mysql.run_mysql_query(query)
+
+	return redirect("/wall")
+
+@app.route("/delete_message", methods=["POST"])
+def delete_message():
+	if session["id"]==int(request.form["user_id"]):
+		comment_query = "DELETE FROM comments WHERE message_id={}".format(request.form["message_id"])
+		message_query = "DELETE FROM messages WHERE id={}".format(request.form["message_id"])
+		
+		mysql.run_mysql_query(comment_query)
+		mysql.run_mysql_query(message_query)
 
 	return redirect("/wall")
 
