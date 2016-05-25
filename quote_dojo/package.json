@@ -1,0 +1,10 @@
+{
+  "name": "quoting_dojo",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "jquery": "^2.2.1",
+    "mongoose": "^4.4.7"
+  }
+}

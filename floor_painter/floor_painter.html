@@ -30,7 +30,6 @@
 						}
 					}
 
-					console.log(paintbrush.row, paintbrush.col)
 					$("#"+paintbrush.row + "-" + paintbrush.col).css("background", "url('jonata-Brush-300px.png') no-repeat")
 					$("#"+paintbrush.row + "-" + paintbrush.col).css("background-size", "contain")
 
@@ -74,7 +73,6 @@
 
 
 				$("body").on("keydown", function(event){
-					console.log(event.keyCode)
 
 					switch(event.keyCode){
 						case 37:
@@ -93,7 +91,6 @@
 							}
 							break
 						case 40:
-							console.log(board[paintbrush.row+1][paintbrush.col])
 							if(board[paintbrush.row+1][paintbrush.col] != 2){
 								paintbrush.row += 1
 							}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Quotes</title>
+		<style type="text/css">
+			.quote{
+				border-bottom: 2px solid gray;
+				margin-bottom: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Quotes</h1>
+		<p><a href="/">Add Your Own!</a></p>
+		<% for(quote in quotes) { %>
+			<div class="quote">
+				<form action="/update_quote" method="post">
+					<input type="hidden" name="quote_id" value="<%= quotes[quote]._id %>">
+					<textarea rows=4 cols=40 name="quote"><%= quotes[quote].quote %></textarea>
+					<input type="submit" value="Update">
+				</form>
+				<p>-- <%= quotes[quote].name %> at <%= quotes[quote].updatedAt %> (<a href="/delete/<%= quotes[quote]._id %>">delete</a>)</p>
+			</div>
+		<% } %>
+	</body>
+</html>
