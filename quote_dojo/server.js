@@ -43,7 +43,6 @@ app.get("/quotes", function(req, res){
 })
 
 app.post("/quotes", function(req, res){
-	console.log("post /quotes")
 	quote = new Quote(req.body)
 	quote.save(function(err){
 		if(err){
@@ -56,8 +55,6 @@ app.post("/quotes", function(req, res){
 })
 
 app.post("/update_quote", function(req, res){
-	console.log("patch /quotes")
-	console.log(req.body)
 	Quote.findOneAndUpdate({_id: req.body.quote_id}, {quote: req.body.quote}, function(err){
 		if(err){
 			console.log("findOneAndUpdate error", err)
