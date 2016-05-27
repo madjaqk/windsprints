@@ -1,3 +1,11 @@
+<p>Page: 
+	{% for i in range(1,pages+1) %}
+		<a href="#" class="page_link" page_num="{{i}}">{{i}}</a> 
+	{% endfor %}
+</p>
+
+<p><input type="number" placeholder="page" id="page_num" value={{page_num}}><button id="select_page">Go!</button></p>
+
 {% for note in notes %}
 	<div class="note">
 		<h3>{{ note.title }}</h3>

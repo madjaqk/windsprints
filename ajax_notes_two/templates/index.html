@@ -35,12 +35,16 @@
 					e.preventDefault()
 				})
 
-				$("#set_page").submit(function(e){
+				$(document).on("click", "button#select_page", function(e){
 					get_notes($("#page_num").val())
-					e.preventDefault()
 				})
 
-				$(".page_link").click(function(e){
+				// $(".page_link").click(function(e){
+				// 	get_notes($(e.target).attr("page_num"))
+				// 	e.preventDefault()
+				// })
+
+				$(document).on("click", "a.page_link", function(e){
 					get_notes($(e.target).attr("page_num"))
 					e.preventDefault()
 				})
@@ -49,14 +53,6 @@
 	</head>
 	<body>
 		<h1>AJAX Notes</h1>
-		<p>Page: 
-			{% for i in range(1,pages+1) %}
-				<a href="#" class="page_link" page_num="{{i}}">{{i}}</a> 
-			{% endfor %}
-		</p>
-		<form id="set_page">
-			<p><input type="number" placeholder="page" id="page_num" value=1><input type="submit" value="Go!"></p>
-		</form>
 		<div id="notes">
 		</div>
 		<form id="new_note">

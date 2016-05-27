@@ -5,6 +5,7 @@ div.note{
 	height: 250px;
 	width: 200px;
 	display: inline-block;
+	vertical-align: top;
 }
 
 a.delete{

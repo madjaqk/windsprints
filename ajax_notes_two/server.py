@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from mysqlconnection import MySQLConnector
-import datetime
+import math
 
 app = Flask(__name__)
 app.secret_key = "pagination"
@@ -12,23 +12,23 @@ per_page = 3
 
 @app.route("/")
 def index():
-	rows = mysql.fetch("SHOW TABLE STATUS")[0]["Rows"]
-	pages = rows // per_page + 1 
-	# Remember I use Python 3, so I need double-slash for integer division
-	return render_template("index.html", pages=pages)
+
+	return render_template("index.html")
 
 @app.route("/all_notes")
 @app.route("/all_notes/")
 @app.route("/all_notes/<int:page>")
 def all_notes(page=1):
+	rows = mysql.fetch("SHOW TABLE STATUS")[0]["Rows"]
+	pages = math.ceil(rows/per_page)
+	# This might not work correctly in Python 2 due to integer division
+	# If so, I *think* putting "from __future__ import division" at the top will fix it
+
 	offset = (page-1)*per_page
 	query = "SELECT * FROM notes ORDER BY created_at DESC LIMIT {} OFFSET {} ".format(per_page, offset)
 	print(query)
 	notes = mysql.fetch(query)
-	if not notes:
-		return "Too far!"
-	else:
-		return render_template("partials/notes.html", notes=notes)
+	return render_template("partials/notes.html", notes=notes, page_num=page, pages=pages)
 
 @app.route("/notes", methods=["POST"])
 def create():
