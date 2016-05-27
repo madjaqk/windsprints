@@ -8,17 +8,27 @@ mysql = MySQLConnector("ajax_notes")
 
 # commands are mysql.fetch(query) and mysql.run_mysql_query(query)
 
-per_page = 2
+per_page = 3
 
 @app.route("/")
 def index():
-	return render_template("index.html")
+	rows = mysql.fetch("SHOW TABLE STATUS")[0]["Rows"]
+	pages = rows // per_page + 1 
+	# Remember I use Python 3, so I need double-slash for integer division
+	return render_template("index.html", pages=pages)
 
 @app.route("/all_notes")
+@app.route("/all_notes/")
 @app.route("/all_notes/<int:page>")
 def all_notes(page=1):
-	notes = mysql.fetch("SELECT * FROM notes ORDER BY created_at DESC")
-	return render_template("partials/notes.html", notes=notes)
+	offset = (page-1)*per_page
+	query = "SELECT * FROM notes ORDER BY created_at DESC LIMIT {} OFFSET {} ".format(per_page, offset)
+	print(query)
+	notes = mysql.fetch(query)
+	if not notes:
+		return "Too far!"
+	else:
+		return render_template("partials/notes.html", notes=notes)
 
 @app.route("/notes", methods=["POST"])
 def create():

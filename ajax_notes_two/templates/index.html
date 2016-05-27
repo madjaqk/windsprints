@@ -6,19 +6,20 @@
 		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.4.js') }}"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
-				function get_notes(){
-					$.get("/all_notes", function(data){
+				function get_notes(num){
+					$.get("/all_notes/"+num, function(data){
 						$("#notes").html(data)
 					})
 				}
 
-				get_notes()
+				get_notes(1)
 
 				$("#new_note").submit(function(e){
 					$.post("/notes", {title: $("#new_title").val()}, function(data){
-						get_notes()
+						get_notes(1)
 					})
 					e.preventDefault()
+					$("#new_title").val("")
 				})
 
 				$(document).on("keyup", "textarea.edit_note", function(e){
@@ -29,8 +30,18 @@
 				$(document).on("click", "a.delete", function(e){
 					note_id = $(e.target).attr("note_id")
 					$.post("/delete", {id: note_id}, function(response){
-						get_notes()
+						get_notes($("#page_num").val())
 					})
+					e.preventDefault()
+				})
+
+				$("#set_page").submit(function(e){
+					get_notes($("#page_num").val())
+					e.preventDefault()
+				})
+
+				$(".page_link").click(function(e){
+					get_notes($(e.target).attr("page_num"))
 					e.preventDefault()
 				})
 			})
@@ -38,6 +49,14 @@
 	</head>
 	<body>
 		<h1>AJAX Notes</h1>
+		<p>Page: 
+			{% for i in range(1,pages+1) %}
+				<a href="#" class="page_link" page_num="{{i}}">{{i}}</a> 
+			{% endfor %}
+		</p>
+		<form id="set_page">
+			<p><input type="number" placeholder="page" id="page_num" value=1><input type="submit" value="Go!"></p>
+		</form>
 		<div id="notes">
 		</div>
 		<form id="new_note">
