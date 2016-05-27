@@ -1,0 +1,7 @@
+{% for note in notes %}
+	<div class="note">
+		<h3>{{ note.title }}</h3>
+		<textarea note_id="{{note.id}}" name="description" class="edit_note" rows=8 width=40>{{ note.description }}</textarea>
+		<p><a class="delete" note_id="{{note.id}}" href="#">(delete)</a></p>
+	</div>
+{% endfor %}

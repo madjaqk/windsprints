@@ -1,0 +1,12 @@
+div.note{
+	border: 2px solid blue;
+	margin: 25px;
+	padding: 10px;
+	height: 250px;
+	width: 200px;
+	display: inline-block;
+}
+
+a.delete{
+	font-style: italic;
+}
